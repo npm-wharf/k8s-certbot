@@ -1,0 +1,26 @@
+name = "letsencrypt-job.<%=namespace%>"
+image = "arobson/k8s-certbot"
+command = "getlegit"
+job = true
+
+[env]
+  CERT_ETCD_NAMESPACE = "<%= keyspace %>"
+  CERT_ECTD_URL = "<%= etcd %>"
+  CERT_DOMAINS = "<%= domains %>"
+  CERT_BASE_DOMAIN = "<%= zone %>"
+  CERT_EMAIL = "<%= email %>"
+  CERT_COUNTRY = "<%= country %>"
+  CERT_STATE = "<%= state %>"
+  CERT_LOCAL = "<%= local %>"
+  CERT_ORG = "<%= organization %>"
+  CERT_UNIT = "<%= unit %>"
+  CERT_BUCKET = "<%= bucket %>"
+  GS_PROJECT_ID = "<%= project_id %>"
+  GS_USER_ID = "<%= user_id %>"
+  GS_USER_KEY = "/app/data/private.key"
+
+[mounts]
+  data = "/app/data"
+
+[volumes]
+  data = "google-auth:private.key"

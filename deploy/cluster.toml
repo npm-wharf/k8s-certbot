@@ -1,0 +1,8 @@
+[<%=namespace%>.selfsign-job]
+  order = 1
+
+<%=namespace%>.letsencrypt-job]
+  order = 10
+
+[<%=namespace%>.renew-certs-job]
+  order = 20

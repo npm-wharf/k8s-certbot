@@ -1,0 +1,64 @@
+{
+  "name": "k8s-certbot",
+  "version": "1.0.0",
+  "description": "a simple script to acquire certs for each subdomain via openSSL and LetsEncrypt",
+  "main": "./src/index.js",
+  "private": true,
+  "bin": {
+    "k8s-certbot": "./bin/k8s-certbot.js"
+  },
+  "scripts": {
+    "release": "standard-version",
+    "test": "./node_modules/mocha/bin/mocha ./spec/*.spec.js",
+    "coverage": "nyc npm test"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/arobson/k8s-certbot.git"
+  },
+  "keywords": [
+    "kubernetes",
+    "letsencrypt"
+  ],
+  "author": "Alex Robson",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/arobson/k8s-certbot/issues"
+  },
+  "homepage": "https://github.com/arobson/k8s-certbot#readme",
+  "devDependencies": {
+    "chai": "^4.1.2",
+    "chai-as-promised": "^7.1.1",
+    "coveralls": "^3.0.0",
+    "folder-hash": "^1.1.2",
+    "mocha": "^4.0.1",
+    "mocha-lcov-reporter": "^1.3.0",
+    "nyc": "^11.3.0",
+    "sinon": "^4.1.2",
+    "sinon-chai": "^2.14.0",
+    "standard": "^10.0.3",
+    "standard-version": "^4.2.0"
+  },
+  "dependencies": {
+    "@google-cloud/storage": "^1.4.0",
+    "aws-sdk": "^2.145.0",
+    "bluebird": "^3.5.1",
+    "joi": "^13.0.1",
+    "mkdirp": "^0.5.1",
+    "node-etcd": "^5.1.0",
+    "processhost": "^0.2.3",
+    "rimraf": "^2.6.2",
+    "s3": "^4.4.0",
+    "tar": "^4.0.2",
+    "yargs": "^10.0.3"
+  },
+  "standard": {
+    "env": [
+      "mocha"
+    ],
+    "globals": [
+      "sinon",
+      "expect"
+    ]
+  }
+}
