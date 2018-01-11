@@ -43,6 +43,8 @@
     "@google-cloud/storage": "^1.4.0",
     "aws-sdk": "^2.145.0",
     "bluebird": "^3.5.1",
+    "bole": "^3.0.2",
+    "chalk": "^2.3.0",
     "joi": "^13.0.1",
     "mkdirp": "^0.5.1",
     "node-etcd": "^5.1.0",

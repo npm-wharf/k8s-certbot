@@ -1,3 +1,5 @@
+const bole = require('bole')
+const log = bole('backup')
 const fs = require('fs')
 const path = require('path')
 const rimraf = require('rimraf')
@@ -8,7 +10,7 @@ function create (bucket, config) {
     .then(
       bucket.uploadFile.bind(null, config),
       () => {
-        console.log('Cert backup failed')
+        log.error('Cert backup failed')
       }
     )
 }
@@ -36,21 +38,24 @@ function restore (bucket, config, runCertBot) {
             .then(
               map => {
                 if (!map || config.renew) {
+                  log.info('Ignoring certs from tarball - running certbot')
                   rimraf.sync(certPath)
                   return runCertBot()
                 } else {
+                  log.info(`Restoring certificates from tarball for domains: ${config.domains.join(', ')}`)
                   return map
                 }
               }
             )
         } else {
+          log.info('No backup found in configured object store')
           rimraf.sync(certPath)
           return runCertBot()
         }
       },
       err => {
         rimraf.sync(certPath)
-        console.log(`Failed to download file:\n\t${err.message}`)
+        log.info(`Failed to download file:\n\t${err.message}`)
         return runCertBot()
       }
     )
@@ -58,7 +63,7 @@ function restore (bucket, config, runCertBot) {
 
 function unzipCerts (config, tarball) {
   const certPath = getCertPath(config)
-  console.log(tarball.dir)
+  log.info(`Attempting to unpack tarball into '${tarball.dir}'`)
   return tar.x(
     {
       file: tarball.file,
@@ -67,11 +72,11 @@ function unzipCerts (config, tarball) {
     }
   ).then(
     () => {
-      console.log(`Unpacked tarball to '${tarball.dir}'`)
+      log.info(`Unpacked tarball to '${tarball.dir}'`)
       return createCertMap(config)
     },
     err => {
-      console.log(`Unpacking tarball failed with error:\n\t${err.message}`)
+      log.error(`Unpacking tarball failed with error:\n\t${err.message}`)
       rimraf.sync(certPath)
       return undefined
     }
@@ -87,7 +92,7 @@ function writeMetadata (config) {
     const metadata = Object.assign({}, date, config)
     fs.writeFileSync(file, JSON.stringify(metadata), 'utf8')
   } catch (err) {
-    console.log(`Failed to write cert metadata to '${file}' (zip creation and upload will fail):\n\t${err.message}`)
+    log.error(`Failed to write cert metadata to '${file}' (zip creation and upload will fail):\n\t${err.message}`)
   }
   return file
 }
@@ -111,11 +116,11 @@ function zipCerts (bucket, config) {
     files
   ).then(
     () => {
-      console.log(`Created tarball with certs '${certs.join(', ')}'`)
+      log.info(`Created tarball with certs '${certs.join(', ')}'`)
       return tgzFile
     },
     err => {
-      console.log(`Failed to create tarball for certs - '${certs.join(', ')}' with error:\n\t${err.message}`)
+      log.error(`Failed to create tarball for certs - '${certs.join(', ')}' with error:\n\t${err.message}`)
       throw err
     }
   )

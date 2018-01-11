@@ -1,3 +1,5 @@
+const bole = require('bole')
+const log = bole('bot')
 const path = require('path')
 const fs = require('fs')
 const Promise = require('bluebird')
@@ -9,7 +11,7 @@ function acquireAll (config, etcd, exec, processes, backup) {
     .then(
       null,
       () => {
-        console.log(`Failed to fetch or renew certs via LetsEncrypt`)
+        log.warn(`Failed to fetch or renew certs via LetsEncrypt`)
         process.exit(100)
       }
     )
@@ -39,7 +41,7 @@ function createHTTPServer (config, etcd, exec, processes, backup) {
   .then(
     onHTTPServer.bind(null, config, etcd, exec, processes, backup),
     err => {
-      console.log(`Cannot create SimpleHTTPServer - cannot proceed:\n\t${err.message}`)
+      log.error(`Cannot create SimpleHTTPServer - cannot proceed:\n\t${err.message}`)
       throw err
     }
   )
@@ -64,7 +66,11 @@ function onHTTPServer (config, etcd, exec, processes, backup, http) {
   http.on('started', () => {
     setTimeout(
       () => {
-        console.log('Checking for backups')
+        if (config.bucket) {
+          log.info(`Checking for backups in '${config.bucket}'`)
+        } else {
+          log.warn('No object store was configured')
+        }
         backup
           .restore(
             () => runCertBot(config, etcd, exec, processes)
@@ -97,7 +103,7 @@ function onHTTPServer (config, etcd, exec, processes, backup, http) {
       config.wait * 1000
     )
   })
-  console.log('Starting SimpleHTTPServer process ...')
+  log.info('Starting SimpleHTTPServer process ...')
   http.start()
   return new Promise((resolve, reject) => {
     deferred.resolve = resolve
@@ -114,20 +120,20 @@ function runCertBot (config, etcd, exec, processes) {
   const args = config.staging
     ? `certonly --webroot --staging -w ./ -n --agree-tos --email ${config.email} --no-self-upgrade ${domainList}`
     : `certonly --webroot -w ./ -n --agree-tos --email ${config.email} --no-self-upgrade ${domainList}`
-  console.log(`Starting LetsEncrypt certbot with arguments: '${args}'`)
+  log.info(`Starting LetsEncrypt certbot with arguments: '${args}'`)
   return exec(console.log, 'certbot', args.split(' '))
     .then(
       () => {
-        console.log(`Certificates for '${config.domains.join(', ')}' acquired. Beginning upload to etcd.`)
+        log.info(`Certificates for '${config.domains.join(', ')}' acquired. Beginning upload to etcd.`)
         return true
       },
       err => {
         if (fs.existsSync(config.logPath || LETS_ENCRYPT_LOG)) {
-          console.log('  Dumping certbot logs to stdio ...')
+          log.error('  Dumping certbot logs to stdio ...')
           const varlog = fs.readFileSync(config.logPath || LETS_ENCRYPT_LOG, 'utf8')
           console.log(varlog)
         }
-        console.log(`Failed to acquire certs for '${config.domains.join(', ')}':\n\texit code: ${err.code}\n\t${err.output.join('\n')}`)
+        log.error(`Failed to acquire certs for '${config.domains.join(', ')}':\n\texit code: ${err.code}\n\t${err.output.join('\n')}`)
         return false
       }
     )
@@ -138,11 +144,11 @@ function selfSignAll (config, etcd, exec) {
     config.domains.map(selfSignForDomain.bind(null, config, etcd, exec))
   ).then(
     certs => {
-      console.log(`Generated self-signed certs successfully. Beginning upload to etcd.`)
+      log.info(`Generated self-signed certs successfully. Beginning upload to etcd.`)
       return writeCerts(config, etcd, certs)
     },
     err => {
-      console.log(`Failed to generate one or more requested self-signed certificates:\n\t${err.message}`)
+      log.error(`Failed to generate one or more requested self-signed certificates:\n\t${err.message}`)
     }
   )
 }
@@ -157,11 +163,11 @@ function selfSignForDomain (config, etcd, exec, domain) {
     .then(
       () => {
         combineFiles(crt, key, pem)
-        console.log(`Self-signed cert for '${domain}' created`)
+        log.info(`Self-signed cert for '${domain}' created`)
         return { domain, crt, key, pem }
       },
       err => {
-        console.log(`Failed to create self-signed cert for domain '${domain}':\n\t${err.createCert.join('')}`)
+        log.error(`Failed to create self-signed cert for domain '${domain}':\n\t${err.createCert.join('')}`)
         throw err
       }
     )
@@ -177,7 +183,7 @@ function write (etcd, key, file) {
       if (err) {
         reject(err)
       } else {
-        console.log(`  successfully wrote file to key '${key}'`)
+        log.info(`  successfully wrote file to key '${key}'`)
         resolve()
       }
     })
@@ -206,7 +212,7 @@ function writeCert (config, etcd, cert) {
   .then(
     null,
     err => {
-      console.log(`Error writing certs to etcd '${config.etcd}' for subdomain '${key}'`)
+      log.error(`Error writing certs to etcd '${config.etcd}' for subdomain '${key}'`)
       throw err
     }
   )

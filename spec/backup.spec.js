@@ -102,7 +102,7 @@ describe('Backup', function () {
   })
 
   describe('when backup tarball exists and renew is falsey', function () {
-    let bucketMock
+    let bucketMock, runCertbot
     before(function (done) {
       bucketMock = sinon.mock(bucket)
       console.log(basePath)
@@ -124,13 +124,16 @@ describe('Backup', function () {
           file: tgzPath
         })
 
-      backup.restore()
+      backup.restore(() => {
+        runCertbot = true
+        return runCertbot
+      })
         .then(() => {
           done()
         })
     })
 
-    it('should invoke callback', function () {
+    it('should not invoke callback', function () {
       const json = JSON.parse(fs.readFileSync(jsonPath, 'utf8'))
       json.should.eql({
         createdOn: 'Wed, 08 Nov 2017 05:12:23 GMT',
@@ -138,6 +141,7 @@ describe('Backup', function () {
         bucket: 'test_domain_org',
         certPath: './spec/certs/'
       })
+      expect(runCertbot).to.equal(undefined)
       bucketMock.verify()
     })
 
@@ -148,7 +152,7 @@ describe('Backup', function () {
   })
 
   describe('when backup tarball exists and renew is truthy', function () {
-    let bucketMock, restored
+    let bucketMock, runCertbot
     before(function (done) {
       config.renew = 'true'
       bucketMock = sinon.mock(bucket)
@@ -172,8 +176,8 @@ describe('Backup', function () {
         })
 
       backup.restore(() => {
-        restored = true
-        return restored
+        runCertbot = true
+        return runCertbot
       })
       .then(() => {
         done()
@@ -183,7 +187,7 @@ describe('Backup', function () {
     it('should invoke callback', function () {
       fs.existsSync(jsonPath).should.equal(false)
       fs.existsSync(tgzPath).should.equal(false)
-      restored.should.equal(true)
+      runCertbot.should.equal(true)
       bucketMock.verify()
     })
 
