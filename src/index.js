@@ -7,6 +7,7 @@ const bucket = require('./bucket')(api)
 const backup = require('./backup')(bucket, config)
 const Bot = require('./bot')
 const bole = require('bole')
+const chalk = require('chalk')
 
 const levelColors = {
   debug: 'gray',
