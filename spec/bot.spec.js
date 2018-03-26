@@ -105,7 +105,8 @@ describe('Bot', function () {
         config = {
           email: 'me@test.io',
           domains: [ 'test.io', 'test.org' ],
-          logPath: './spec/fake.log'
+          logPath: './spec/fake.log',
+          port: 80
         }
         args = [
           'certonly',
@@ -114,6 +115,8 @@ describe('Bot', function () {
           './',
           '-n',
           '--agree-tos',
+          '--http-01-port',
+          '80',
           '--email',
           'me@test.io',
           '--no-self-upgrade',
@@ -185,7 +188,8 @@ describe('Bot', function () {
           base: 'test.io',
           certPath: './spec/certs',
           email: 'me@test.io',
-          domains: [ 'test.io', 'www.test.io' ]
+          domains: [ 'test.io', 'www.test.io' ],
+          port: 80
         }
         args = [
           'certonly',
@@ -194,6 +198,8 @@ describe('Bot', function () {
           './',
           '-n',
           '--agree-tos',
+          '--http-01-port',
+          '80',
           '--email',
           'me@test.io',
           '--no-self-upgrade',
@@ -288,7 +294,8 @@ describe('Bot', function () {
           base: 'test.io',
           certPath: './spec/certs',
           email: 'me@test.io',
-          domains: [ 'test.io', 'www.test.io' ]
+          domains: [ 'test.io', 'www.test.io' ],
+          port: 80
         }
         args = [
           'certonly',
@@ -297,6 +304,8 @@ describe('Bot', function () {
           './',
           '-n',
           '--agree-tos',
+          '--http-01-port',
+          '80',
           '--email',
           'me@test.io',
           '--no-self-upgrade',

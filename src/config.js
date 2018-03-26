@@ -14,6 +14,7 @@ const WAIT = 'CERT_WAIT'
 const RENEW = 'CERT_RENEW'
 const STAGING = 'CERT_STAGING'
 const DEFAULT_CERT_PATH = '/etc/letsencrypt/live'
+const PORT = 'CERT_HTTP_PORT'
 
 const Joi = require('joi')
 const definition = {
@@ -58,7 +59,8 @@ function getConfiguration () {
     bucket: process.env[ BUCKET ],
     certPath: process.env[ CERT_PATH ] || DEFAULT_CERT_PATH,
     staging: process.env[ STAGING ] || false,
-    renew: process.env[ RENEW ] || false
+    renew: process.env[ RENEW ] || false,
+    port: process.env[ PORT ] || 80
   }
 
   validateConfig(config)

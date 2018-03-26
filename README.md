@@ -26,6 +26,7 @@ Each command expects a set of environment variables:
  * `CERT_BUCKET` - the name of the bucket/object store to back up LetsEncrypt certs to
  * `CERT_STAGING` - uses LetsEncrypt's staging environment instead of their prod so that you can test (and not hit the rate limit as quickly)
  * `CERT_RENEW` - ignore any backup certs in the bucket/object store and acquire new certs
+ * `CERT_HTTP_PORT` - controls the port for the `--http-01-port` argument (default `80`)
 
 ### LetsEncrypt Certs
 
