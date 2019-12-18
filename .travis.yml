@@ -11,7 +11,7 @@ script:
 
 after_success:
   - docker login -u="$DOCKER_USERNAME" -p="$DOCKER_PASSWORD"
-  - dockyard build image --repo=npmwharf --name=k8s-certbot --tags lm,v_s,v,miv,ma --cache-from-latest --indicate-progress
+  - dockyard build image --repo=npmwharf --name=k8s-certbot --tags lm,v_s,v,miv,ma --cache-from-latest --indicate-progress --build-branches=master
 
 node_js:
   - "8"
