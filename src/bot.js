@@ -118,8 +118,8 @@ function runCertBot (config, etcd, exec, processes) {
     .join(' ')
 
   const args = config.staging
-    ? `certonly --webroot --staging -w ./ -n --agree-tos --http-01-port ${config.port} --email ${config.email} --no-self-upgrade ${domainList}`
-    : `certonly --webroot -w ./ -n --agree-tos --http-01-port ${config.port} --email ${config.email} --no-self-upgrade ${domainList}`
+    ? `certonly --webroot --server https://acme-v02.api.letsencrypt.org/directory --staging -w ./ -n --agree-tos --http-01-port ${config.port} --email ${config.email} --no-self-upgrade ${domainList}`
+    : `certonly --webroot --server https://acme-v02.api.letsencrypt.org/directory -w ./ -n --agree-tos --http-01-port ${config.port} --email ${config.email} --no-self-upgrade ${domainList}`
   log.info(`Starting LetsEncrypt certbot with arguments: '${args}'`)
   return exec(console.log, 'certbot', args.split(' '))
     .then(

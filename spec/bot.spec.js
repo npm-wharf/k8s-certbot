@@ -111,6 +111,8 @@ describe('Bot', function () {
         args = [
           'certonly',
           '--webroot',
+          '--server',
+          'https://acme-v02.api.letsencrypt.org/directory',
           '-w',
           './',
           '-n',
@@ -194,6 +196,8 @@ describe('Bot', function () {
         args = [
           'certonly',
           '--webroot',
+          '--server',
+          'https://acme-v02.api.letsencrypt.org/directory',
           '-w',
           './',
           '-n',
@@ -300,6 +304,8 @@ describe('Bot', function () {
         args = [
           'certonly',
           '--webroot',
+          '--server',
+          'https://acme-v02.api.letsencrypt.org/directory',
           '-w',
           './',
           '-n',

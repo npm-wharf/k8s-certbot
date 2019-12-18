@@ -319,8 +319,8 @@ describe('Backup', function () {
         bucketMock.verify()
       })
     })
-    after(function () {
-      fs.unlink('./certs.tgz')
+    after(function (done) {
+      fs.unlink('./certs.tgz', () => done())
     })
   })
 })
