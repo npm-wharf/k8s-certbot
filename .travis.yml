@@ -4,14 +4,14 @@ os:
   - linux
 
 before_script:
-  - npm i dockyard@latest -g
+  - npm i @npm-wharf/shipwright@latest -g
 
 script:
   - nyc npm test && nyc report --reporter=text-lcov | coveralls
 
 after_success:
   - docker login -u="$DOCKER_USERNAME" -p="$DOCKER_PASSWORD"
-  - dockyard build image --repo=npmwharf --name=k8s-certbot --tags lm,v_s,v,miv,ma --cache-from-latest --indicate-progress --build-branches=master
+  - shipwright build image --repo=npmwharf --name=k8s-certbot --tags lm,v_s,v,miv,ma --cache-from-latest --indicate-progress --always-build
 
 node_js:
   - "8"
