@@ -36,7 +36,7 @@ function createCertMap (config, signed) {
 function createHTTPServer (config, etcd, exec, processes, backup) {
   return processes.create('http', {
     command: 'python',
-    args: ['-m', 'SimpleHTTPServer', '80']
+    args: ['-m', 'http.server', '80']
   })
   .then(
     onHTTPServer.bind(null, config, etcd, exec, processes, backup),

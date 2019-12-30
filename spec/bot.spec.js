@@ -43,7 +43,7 @@ describe('Bot', function () {
         processMock.expects('create')
           .withArgs('http', {
             command: 'python',
-            args: ['-m', 'SimpleHTTPServer', '80']
+            args: ['-m', 'http.server', '80']
           })
           .rejects(new Error('no'))
         return bot.acquireAll()
@@ -76,7 +76,7 @@ describe('Bot', function () {
         processMock.expects('create')
           .withArgs('http', {
             command: 'python',
-            args: ['-m', 'SimpleHTTPServer', '80']
+            args: ['-m', 'http.server', '80']
           })
           .resolves(http)
 
@@ -141,7 +141,7 @@ describe('Bot', function () {
         processMock.expects('create')
           .withArgs('http', {
             command: 'python',
-            args: ['-m', 'SimpleHTTPServer', '80']
+            args: ['-m', 'http.server', '80']
           })
           .resolves(http)
 
@@ -225,7 +225,7 @@ describe('Bot', function () {
         processMock.expects('create')
           .withArgs('http', {
             command: 'python',
-            args: ['-m', 'SimpleHTTPServer', '80']
+            args: ['-m', 'http.server', '80']
           })
           .resolves(http)
 
@@ -333,7 +333,7 @@ describe('Bot', function () {
         processMock.expects('create')
           .withArgs('http', {
             command: 'python',
-            args: ['-m', 'SimpleHTTPServer', '80']
+            args: ['-m', 'http.server', '80']
           })
           .resolves(http)
 
