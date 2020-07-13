@@ -37,7 +37,7 @@
     "sinon": "^4.1.2",
     "sinon-chai": "^2.14.0",
     "standard": "^10.0.3",
-    "standard-version": "^4.2.0"
+    "standard-version": "^8.0.1"
   },
   "dependencies": {
     "@google-cloud/storage": "^1.4.0",
